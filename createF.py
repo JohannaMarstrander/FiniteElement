@@ -24,7 +24,7 @@ def createF(g,N):
         T[:,1:]=p1,p2,p3
         C = np.linalg.solve(T, alpha)
         for i in range(0,2):
-            F[tri[n][i]]+=quadrature2D(p1,p2,p3,4,f,C[i],g)
+            F[el[i]]+=quadrature2D(p1,p2,p3,4,f,C[i],g)
     return F
 
-createF(g,10)
+print(createF(g,10))
