@@ -4,7 +4,7 @@ from plot import plot
 
 
 def homogeneousDirichlet(N, Nq, f):
-    A, F, edge, p = createAandF(f, N, Nq)
+    A, F, edge, p, tri = createAandF(f, N, Nq)
     nodes = np.unique(edge)
     F[nodes] = 0
     epsilon = 1e-16
