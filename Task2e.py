@@ -7,6 +7,7 @@ Created on Tue Sep 29 10:35:29 2020
 from getdisc import GetDisc
 import numpy as np
 from Task1 import quadrature2D
+from matplotlib import pyplot as plt
 #from createF import createF
 
 def lin(x,y,c,g):
@@ -70,9 +71,21 @@ def u(x,y):
 
 
 
-u_num,p=homogeneousDirichlet(100,4,f)
-
+u_num,p=homogeneousDirichlet(300,4,f)
 u_ex=u(p[:,0],p[:,1])
+
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+ax.plot_trisurf(p[:,0], p[:,1], u_num, linewidth=0.2, antialiased=True)
+
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+ax.plot_trisurf(p[:,0], p[:,1], u_ex, linewidth=0.2, antialiased=True)
+
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+ax.plot_trisurf(p[:,0], p[:,1], u_num-u_ex, linewidth=0.2, antialiased=True)
+
 print(u_num)
 print(u_ex)
 
