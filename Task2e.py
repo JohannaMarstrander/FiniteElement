@@ -9,6 +9,7 @@ import numpy as np
 from Task1 import quadrature2D
 
 def createA(N, Nq):
+    #Returns A as well as list of corners of edge lines for incorporating BCs
     p, tri, edge = GetDisc(N)
     A = np.zeros((len(p), len(p)))
     
@@ -24,8 +25,17 @@ def createA(N, Nq):
             for j in range(len(el)):
                 c = np.dot(coeff[i,1:], coeff[j,1:])
                 A[el[i],el[j]] += quadrature2D(p[el[0]],p[el[1]],p[el[2]],Nq,func, c)
-    return A
+    return A, edge
 
-A = createA(5,4)
+A, edge = createA(5,4)
 
 print("A:",A)
+
+def homogeneousDirichlet(N, Nq):
+    A, edge = createA(N, Nq)
+    nodes = np.unique(edge)
+    epsilon = 1e-10
+    A[nodes, nodes] = 1/epsilon
+    return A
+
+print("A_eps:", homogeneousDirichlet(5,4))
