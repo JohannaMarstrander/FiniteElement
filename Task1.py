@@ -3,15 +3,27 @@ import numpy as np
 
 def quadrature1D(a, b, Nq ,g):
     zq,pq = np.polynomial.legendre.leggauss(Nq)
-    xq = 0.5*(b-a)*zq+0.5*(b+a)
-    g_gauss = 0.5*(b-a)*np.dot(g(xq),pq)
+    if type(a) == list or type(a) == np.ndarray:
+        #assumes len(a) == len(b) == 2
+        a, b = np.array(a), np.array(b)
+        dist = np.linalg.norm(a-b)
+        xq = 0.5*(b[0]-a[0])*zq+0.5*(b[0]+a[0])
+        yq = 0.5*(b[1]-a[1])*zq+0.5*(b[1]+a[1])
+        g_gauss = 0.5*dist*np.dot(g(xq, yq),pq)
+    else:
+        xq = 0.5*(b-a)*zq+0.5*(b+a)
+        g_gauss = 0.5*(b-a)*np.dot(g(xq),pq)
     return g_gauss
 
 def g(x):
     return np.exp(x)
 
+def g1(x, y):
+    return x*y + x
 
-integral1=quadrature1D(0,2,5,g)
+#print(np.sqrt(2)* 5/6)
+
+#integral1=quadrature1D([0,0],[1,1],5,g1)
 
 #print(integral1)
 
