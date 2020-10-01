@@ -32,7 +32,8 @@ def neumann(N, Nq, f, g):
             coeff = np.linalg.solve(C, b)
             
             #Modify F
-            F[node] += quadrature2D(p[el[0]], p[el[1]], p[el[2]], Nq, lin, coeff, g)
+            edge_node = [a for a in el if a in nodes and a!=node]
+            F[node] += quadrature1D(p[node], p[edge_node], Nq, lin, coeff, g)
 
     u = np.linalg.solve(A, F)
     return u, p
