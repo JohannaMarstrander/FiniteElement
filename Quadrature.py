@@ -1,7 +1,7 @@
 import numpy as np 
 
 
-def quadrature1D(a, b, Nq ,g):
+def quadrature1D(a, b, Nq ,g, *args):
     zq,pq = np.polynomial.legendre.leggauss(Nq)
     if type(a) == list or type(a) == np.ndarray:
         #assumes len(a) == len(b) == 2
@@ -9,7 +9,7 @@ def quadrature1D(a, b, Nq ,g):
         dist = np.linalg.norm(a-b)
         xq = 0.5*(b[0]-a[0])*zq+0.5*(b[0]+a[0])
         yq = 0.5*(b[1]-a[1])*zq+0.5*(b[1]+a[1])
-        g_gauss = 0.5*dist*np.dot(g(xq, yq),pq)
+        g_gauss = 0.5*dist*np.dot(g(xq, yq, *args),pq)
     else:
         xq = 0.5*(b-a)*zq+0.5*(b+a)
         g_gauss = 0.5*(b-a)*np.dot(g(xq),pq)

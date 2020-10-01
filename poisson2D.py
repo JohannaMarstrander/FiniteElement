@@ -3,15 +3,14 @@
 
 from getdisc import GetDisc
 import numpy as np
-from Task1 import quadrature2D
+from Quadrature import quadrature2D
 
 
 def lin(x, y, c, g):
     "helping to create the F vecotr"
     return (c[0] + x * c[1] + y * c[2]) * g(x, y)
 
-#HER MÅ VI BYTET NAVN: f KAN IKKE HETE g
-def createAandF(g, N, Nq):
+def createAandF(f, N, Nq):
     # Returns A as well as list of corners of edge lines for incorporating BCs
     """Returns A,F ,a list of corners of edge lines and a list of points"""
     p, tri, edge = GetDisc(N)
@@ -31,5 +30,5 @@ def createAandF(g, N, Nq):
             for j in range(len(el)):
                 c = np.dot(coeff[i, 1:], coeff[j, 1:])
                 A[el[i], el[j]] += quadrature2D(p[el[0]], p[el[1]], p[el[2]], Nq, func, c)
-            F[el[i]] += quadrature2D(p1, p2, p3, Nq, lin, coeff[i], g)
+            F[el[i]] += quadrature2D(p1, p2, p3, Nq, lin, coeff[i], f)
     return A, F, edge, p, tri
