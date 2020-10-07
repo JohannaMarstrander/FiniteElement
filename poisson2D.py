@@ -5,14 +5,18 @@ from getdisc import GetDisc
 import numpy as np
 from Quadrature import quadrature2D
 
+"""
+Base function for creating A and F without considering boundary conditions. 
+"""
 
 def lin(x, y, c, g):
-    "helping to create the F vecotr"
+    "utility function to create the F vecotr"
     return (c[0] + x * c[1] + y * c[2]) * g(x, y)
 
 def createAandF(f, N, Nq):
-    # Returns A as well as list of corners of edge lines for incorporating BCs
-    """Returns A,F ,a list of corners of edge lines and a list of points"""
+    """Returns A, F,a list of corners of edge lines, a list of points, list of elements.
+        f is the rhs of the eq, N is number of nodes, Nq number of integration points in 
+        gaussian quadrature"""
     p, tri, edge = GetDisc(N)
     A = np.zeros((len(p), len(p)))
     F = np.zeros(N)
