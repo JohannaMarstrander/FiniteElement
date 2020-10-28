@@ -5,7 +5,6 @@ Uses base function from poisson2D.
 
 import numpy as np
 from poisson2D import createAandF
-from plot import plot
 
 
 def homogeneousDirichlet(N, Nq, f):
