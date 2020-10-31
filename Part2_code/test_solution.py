@@ -63,9 +63,9 @@ class TestStressRecovery(unittest.TestCase):
         max_error = np.max(np.abs(e_ex-A[0]))
         self.assertAlmostEqual(max_error, 0, delta=1e1/N)
         
-        plot(p[:, 0], p[:, 1], A[0], "sigma_xx, N = ")
-        plot(p[:, 0], p[:, 1], e_ex, "sigma_yy, N = ")
-        plot(p[:, 0], p[:, 1], S[0], "sigma_xy, N = ")
+        plot(p[:, 0], p[:, 1], A[0], "sigma_xx, N = "+str(N))
+        plot(p[:, 0], p[:, 1], e_ex, "sigma_yy, N = "+str(N))
+        plot(p[:, 0], p[:, 1], S[0], "sigma_xy, N = "+str(N))
         
         #Hva skal egentlig testes her?
 
