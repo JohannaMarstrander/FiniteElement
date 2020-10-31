@@ -1,6 +1,6 @@
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from getdisc import GetDisc
+from Part1.getdisc import GetDisc
 from matplotlib import pyplot as plt
 
 def PlotMesh(N):
