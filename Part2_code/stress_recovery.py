@@ -11,7 +11,6 @@ def f(x,y,pos):
     else:
         return E/(1-nu**2) * (-2*x**2 - y**2 + nu* x**2 -2*nu*x*y - 2*x*y + 3 -nu)
     
-#u,p, tri=homogeneousDirichlet(100,4,f,nu,E)
 
 def StressRecovery(U, p, tri, nu, E):
     #Finding average stress per element(assuming const)
@@ -42,13 +41,3 @@ def StressRecovery(U, p, tri, nu, E):
         
     return (S[:,1:]/S[:,0][:,None]).T, p
     
-#S, p = StressRecovery(u,p,tri,nu, E)
-
-#u1_num=u[::2]
-#u2_num=u[1::2]
-
-#plot(p[:, 0], p[:, 1], u1_num, "Numerical Solution, N = ")
-#plot(p[:, 0], p[:, 1], u2_num, "2Numerical Solution, N = ")
-#plot(p[:, 0], p[:, 1], S[0], "Stress 1, N = ")
-#plot(p[:, 0], p[:, 1], S[1], "Stress 2, N = ")
-#plot(p[:, 0], p[:, 1], S[2], "Stress 3, N = ")
