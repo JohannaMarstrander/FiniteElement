@@ -89,7 +89,7 @@ def homogeneousDirichlet(N, Nq, f,nu,E):
         F[2*nodes+d]=0
         A[2*nodes+d, 2*nodes+d] = 1 / epsilon
     u = np.linalg.solve(A, F)
-    return u, p
+    return u, p, tri
 
 
 #u,p=homogeneousDirichlet(4,4,f,0.25,1)
@@ -128,7 +128,7 @@ def error():
     rel_error=[]
     conv=[]
     h=[]
-    u,p = homogeneousDirichlet(n+1, 4, f, 0.25, 1)
+    u,p, tri = homogeneousDirichlet(n+1, 4, f, 0.25, 1)
     ux,uy= u[::2],u[1::2]
     U.append(u)
     for i in range(1,6):
@@ -144,7 +144,7 @@ def error():
         ux_k=ux[k]
         #u_best = np.array([ux[::t],uy[::t]]) #making the comparison easiest
         #print(u_best)
-        u, p = homogeneousDirichlet(N, 4, f, 0.25, 1)
+        u, p, tri = homogeneousDirichlet(N, 4, f, 0.25, 1)
         ux_new= u[::2]
         #print(ux_k)
         #print(ux_new)
@@ -154,7 +154,8 @@ def error():
         print(max(error))
         h.append(1/(2**i))
     return rel_error, conv,h
-rel_error,conv,h=error()
+
+#rel_error,conv,h=error()
 
 #print(rel_error)
 #plt.figure()

@@ -1,16 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from Part2_code.test2 import homogeneousDirichlet
+from Part2_code.test_Nanna import homogeneousDirichlet
 from Part1.plot import plot
-
-E=1
-nu=0.25
-def f(x,y,pos):
-    if pos==0:
-        return E/(1-nu**2) * (-2*y**2 - x**2 + nu* x**2 -2*nu*x*y - 2*x*y + 3 -nu)
-    else:
-        return E/(1-nu**2) * (-2*x**2 - y**2 + nu* x**2 -2*nu*x*y - 2*x*y + 3 -nu)
-    
 
 def StressRecovery(U, p, tri, nu, E):
     #Finding average stress per element(assuming const)

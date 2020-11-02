@@ -3,7 +3,7 @@ import unittest
 
 import numpy as np
 from Part2_code.stress_recovery import StressRecovery
-from Part2_code.test2 import homogeneousDirichlet
+from Part2_code.test_Nanna import homogeneousDirichlet
 
 E=1
 nu=0.25
