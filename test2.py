@@ -3,7 +3,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 from Part1.Quadrature import quadrature2D
 from Part1.plot import plot
-import pickle
+
 
 
 def PlotMesh(N):
@@ -96,15 +96,11 @@ def homogeneousDirichlet(N, Nq, f,nu,E):
 
 #a=np.load(outfile)
 
-#with open('test.npy', 'wb') as f:
-#    np.save(f, u)
-
 
 
 #u1_num=u[::2]
 #u2_num=u[1::2]
 
-#print(u)
 
 def u(x,y):
     return (x**2-1)*(y**2-1)
@@ -123,46 +119,44 @@ def u(x,y):
 #plt.show()
 
 def error():
-    U=[]
-    n=2**7
+    n=2**6
     rel_error=[]
     conv=[]
     h=[]
-    u,p = homogeneousDirichlet(n+1, 4, f, 0.25, 1)
+    u,p_big = homogeneousDirichlet(n+1, 4, f, 0.25, 1)
     ux,uy= u[::2],u[1::2]
-    U.append(u)
-    for i in range(1,6):
-        #print(i)
+    a = np.linspace(0, n, n + 1)
+    for i in range(1,5):
         N=2**i+1
-        t = int(n/2**(i))
-        #print(t)
-
-        a = np.linspace(0, n, n+1)
-        k = np.array([n * a[::t] + j for j in a[::t]]).flatten()
+        t = int(n/(2**(i)))
+        k = np.array([(n+1) * a[::t] + j for j in a[::t]]).flatten()
         k=k.astype(int)
-        #print(k)
-        ux_k=ux[k]
-        #u_best = np.array([ux[::t],uy[::t]]) #making the comparison easiest
-        #print(u_best)
+        k=np.sort(k)
+        ux_k,uy_k = ux[k],uy[k]
         u, p = homogeneousDirichlet(N, 4, f, 0.25, 1)
-        ux_new= u[::2]
-        #print(ux_k)
-        #print(ux_new)
-        error=  abs(ux_new - ux_k)/np.linalg.norm(ux,ord=np.inf)
-        rel_error.append( error)
-        conv.append(np.linalg.norm(error))
-        print(max(error))
+        u_num= np.hstack((u[::2] ,u[1::2]))
+        u_k=np.hstack((ux_k,uy_k))
+        error=  abs(u_k - u_num)/np.linalg.norm(ux,ord=np.inf)
+        rel_error.append(error)
+        conv.append(np.linalg.norm(u_num - u_k))
         h.append(1/(2**i))
     return rel_error, conv,h
 rel_error,conv,h=error()
 
-#print(rel_error)
-#plt.figure()
-#plt.loglog(h,conv)
-#plt.show()
-#order = np.polyfit(np.log(h), np.log(conv), 1)[0]
-#print("order", order)
+plt.figure()
+plt.loglog(h,conv)
+plt.show()
+order = np.polyfit(np.log(h), np.log(conv), 1)[0]
+print("order", order)
 
+
+# conv,h = nanna()
+#
+# plt.figure()
+# plt.loglog(h,conv)
+# plt.show()
+# order = np.polyfit(np.log(h), np.log(conv), 1)[0]
+# print("order", order)
 
 
 #p,tri,edge=getPlate(10)
