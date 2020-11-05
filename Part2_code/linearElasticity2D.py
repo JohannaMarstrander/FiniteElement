@@ -1,6 +1,8 @@
 from Part2_code.getplate import getPlate
 import numpy as np
 from Part1.Quadrature import quadrature2D
+from scipy.sparse.linalg import spsolve
+from scipy import sparse
 
 def lin(x, y, c, g,*args):
     "utility function to create the F vecotr"
@@ -16,10 +18,10 @@ def createAandF(f, N, Nq,nu,E):
 
     for el in tri:  # for each element
         # Find coefficients of H_alpha^k
-        C = np.hstack((np.array([[1], [1], [1]]), p[el]))
+        B = np.hstack((np.array([[1], [1], [1]]), p[el]))
         p1, p2, p3 = p[el[0]], p[el[1]], p[el[2]]
         b1, b2, b3 = np.array([1, 0, 0]), np.array([0, 1, 0]), np.array([0, 0, 1])
-        coeff = np.array([np.linalg.solve(C, b1), np.linalg.solve(C, b2), np.linalg.solve(C, b3)])
+        coeff = np.array([np.linalg.solve(B, b1), np.linalg.solve(B, b2), np.linalg.solve(B, b3)])
 
         C =np.array(([1,nu,0],[nu,1,0],[0,0,(1-nu)/2]))*E/(1-nu**2)
 
@@ -35,7 +37,6 @@ def createAandF(f, N, Nq,nu,E):
                         A[2*el[i]+d1,2*el[j]+d2] += quadrature2D(p[el[0]], p[el[1]], p[el[2]], Nq, func, w)
             for d in range(2):
                 F[2*el[i]+d] += quadrature2D(p1, p2, p3, Nq, lin, coeff[i], f,d)
-
     return A, F, edge, p, tri
 
 def homogeneousDirichlet(N, Nq, f,nu,E):
@@ -53,5 +54,6 @@ def homogeneousDirichlet(N, Nq, f,nu,E):
 
         F[2*nodes+d]=0
         A[2*nodes+d, 2*nodes+d] = 1 / epsilon
-    u = np.linalg.solve(A, F)
+    A=sparse.csr_matrix(A)
+    u = spsolve(A, F)
     return u, p, tri
