@@ -11,7 +11,7 @@ def lin(x, y, c, g,*args):
 def createAandF(f, N, Nq,nu,E):
     """Returns A, F,a list of corners of edge lines, a list of points, list of elements.
         f is the rhs of the eq, N^2 is number of nodes, Nq number of integration points in
-        gaussian quadrature"""
+        gaussian quadrature, nu, E problem parameters"""
     p, tri, edge = getPlate(N)
     A = np.zeros((2*N**2, 2*N**2))
     F = np.zeros(2*N**2)
@@ -42,9 +42,10 @@ def createAandF(f, N, Nq,nu,E):
 def homogeneousDirichlet(N, Nq, f,nu,E):
     """
     Solving the poisson problem in 2D with homogeneous Dirichlet BCs.
-    N is the number of nodes in triangulation, Nq is the number of
-    integration points in the gaussian quadrature. f is the rhs of the eq.
-    Returns the solution u and a list of coordinates of nodes p.
+    N^2 is the number of nodes in triangulation, Nq is the number of
+    integration points in the gaussian quadrature. f is the rhs of the eq. 
+    nu, E problem parameters. 
+    Returns the solution u, a list of coordinates of nodes p, list of elements.
     """
     A, F, edge, p, tri = createAandF(f, N, Nq,nu,E)
     nodes = np.unique(edge)

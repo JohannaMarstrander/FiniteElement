@@ -4,7 +4,10 @@ from Part2_code.test_Nanna import homogeneousDirichlet
 from Part1.plot import plot
 
 def StressRecovery(U, p, tri, nu, E):
-    #Finding average stress per element(assuming const)
+    """
+    Returns a list of Stress at nodes S, list of points p. U is numerical
+    solution, p list of points, tri list of elements, nu, E problem parameters. 
+    """
     e = np.zeros((len(tri),3))
     S = np.zeros((len(p), 4))
     
@@ -20,7 +23,8 @@ def StressRecovery(U, p, tri, nu, E):
         
         #Finding strain
         e[n,::2] += coeff[0,1:]
-        e[n,1:] += coeff[1,1:]
+        e[n,1:] += np.flip(coeff[1,1:])
+        
         #Finding stress
         C =np.array(([1,nu,0],[nu,1,0],[0,0,(1-nu)/2]))*E/(1-nu**2)
         e[n] = C@e[n]
@@ -29,6 +33,6 @@ def StressRecovery(U, p, tri, nu, E):
         for i in el:
             S[i,1:] += e[n]
             S[i,0] += 1.
-        
+            
+    #Returning average  
     return (S[:,1:]/S[:,0][:,None]).T, p
-    

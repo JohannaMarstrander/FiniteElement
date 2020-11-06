@@ -15,14 +15,15 @@ def f(x,y,pos):
     if pos==0:
         return E/(1-nu**2) * (-2*y**2 - x**2 + nu* x**2 -2*nu*x*y - 2*x*y + 3 -nu)
     else:
-        return E/(1-nu**2) * (-2*x**2 - y**2 + nu* x**2 -2*nu*x*y - 2*x*y + 3 -nu)
+        return E/(1-nu**2) * (-2*x**2 - y**2 + nu* y**2 -2*nu*x*y - 2*x*y + 3 -nu)
 
 
 def u(x,y):
     return (x**2-1)*(y**2-1)
 
 class TestHomogeneousDirichlet(unittest.TestCase):
-
+    
+    @unittest.skip
     def test_compare_analytic(self):
         N = 50
         
@@ -36,15 +37,16 @@ class TestHomogeneousDirichlet(unittest.TestCase):
         
         #Compare
         max_error = np.max((np.max(np.abs(u1_num-u_ex)), np.max(np.abs(u2_num-u_ex))))
-        print("Max error is:", max_error, " for N=",N)
+        print("Max error of solution is:", max_error, " for N=",N)
         self.assertAlmostEqual(max_error, 0, delta=1/N)
         
         plot(p[:, 0], p[:, 1], u1_num, "Numerical Solution, N = "+str(N), set_axis = True)
         plot(p[:, 0], p[:, 1], u_ex, "Exact Solution", set_axis = True)
         plot(p[:, 0], p[:, 1], u1_num - u_ex, "Error, N = "+str(N))
-        
+    
+    @unittest.skip
     def test_convergence(self):
-        highest = 3 #Comparing num_sol to solution with h = 1/2^highest
+        highest = 7 #Comparing num_sol to solution with h = 1/2^highest
         n=2**highest
         rel_error=[]
         conv=[]
@@ -75,8 +77,9 @@ class TestHomogeneousDirichlet(unittest.TestCase):
         plt.savefig("conv.pdf")
         plt.show()
     
+    @unittest.skip
     def test_runtime(self):
-        highest = 3
+        highest = 7
         timeList=[]
         h=[]
         for i in range(1,highest):
@@ -93,36 +96,40 @@ class TestHomogeneousDirichlet(unittest.TestCase):
         plt.savefig("time.pdf")
         plt.show()
 
-#Exact derivative du/dx
+#Exact strain-vector
 def e(x,y):
-    return 2*x*(y**2 - 1)
+    e_xx = 2*x*(y**2 - 1)
+    e_yy = 2*y*(x**2 - 1)
+    e_xy = e_xx + e_yy
+    return np.array([e_xx, e_yy, e_xy])
     
 class TestStressRecovery(unittest.TestCase):
     
     def test_stress_recovery(self):
-        N = 50
+        N = 100
         #Find numerical solution
         u, p, tri=homogeneousDirichlet(N,4,f,nu,E)
         
         S, p = StressRecovery(u,p,tri,nu, E)
+        
+        #Comparing to analytical solution (sigma_xx)
         e_ex = e(p[:,0], p[:,1])
+        C =np.array(([1,nu,0],[nu,1,0],[0,0,(1-nu)/2]))*E/(1-nu**2)
+        S_ex = C@e_ex
+        max_error = np.max(np.abs(S_ex[0]-S[0]))
+        self.assertAlmostEqual(max_error, 0, delta=10/N)
+        print("Max error of recovered stress is:", max_error, " for N=",N)
         
+        #Plotting results
+        plot(p[:, 0], p[:, 1], S[0], "sigma_xx, N = "+str(N))
+        plot(p[:, 0], p[:, 1], S[1], "sigma_yy, N = "+str(N))
+        plot(p[:, 0], p[:, 1], S[2], "sigma_xy, N = "+str(N))
         
-        #C =np.array(([1,nu,0],[nu,1,0],[0,0,(1-nu)/2]))*E/(1-nu**2)
-        #C_inv = np.linalg.inv(C)
+        plot(p[:, 0], p[:, 1], S[0]- S_ex[0], "sigma_xx, N = "+str(N))
+        plot(p[:, 0], p[:, 1], S[1]- S_ex[1], "sigma_yy, N = "+str(N))
+        plot(p[:, 0], p[:, 1], S[2]- S_ex[2], "sigma_xy, N = "+str(N))
         
-        #Exact solution not known, but exact derivatives can be found and 
-        #compared to strain(C_inv * stress)
-        C_inv = np.array([[1/E, -nu/E, 0],[-nu/E, 1/E, 0], [0,0,2*(1+nu)/E]])
-        A = C_inv@S
-        max_error = np.max(np.abs(e_ex-A[0]))
-        self.assertAlmostEqual(max_error, 0, delta=1/N)
-        
-        plot(p[:, 0], p[:, 1], A[0], "sigma_xx, N = "+str(N))
-        plot(p[:, 0], p[:, 1], e_ex, "sigma_yy, N = "+str(N))
-        plot(p[:, 0], p[:, 1], S[0], "sigma_xy, N = "+str(N))
                 
-
 
 if __name__ == '__main__':
     unittest.main()
