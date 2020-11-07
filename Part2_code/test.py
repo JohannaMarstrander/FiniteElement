@@ -22,8 +22,7 @@ def u(x,y):
     return (x**2-1)*(y**2-1)
 
 class TestHomogeneousDirichlet(unittest.TestCase):
-    
-    @unittest.skip
+
     def test_compare_analytic(self):
         N = 100
         
@@ -47,7 +46,6 @@ class TestHomogeneousDirichlet(unittest.TestCase):
     def test_convergence(self):
         highest = 7 #Comparing num_sol to solution with h = 1/2^highest
         n=2**highest
-        rel_error=[]
         conv=[]
         h=[]
         u,p, tri = homogeneousDirichlet(n+1, 4, f, nu, E)
@@ -62,18 +60,19 @@ class TestHomogeneousDirichlet(unittest.TestCase):
             k=np.sort(k)
             ux_k,uy_k = ux[k],uy[k]
             u, p,tri = homogeneousDirichlet(N, 4, f, nu, E)
-            conv.append(np.linalg.norm(ux_k - u[::2]))
+            rel_error=abs(np.array([ux_k, uy_k]) - np.array([u[::2], u[1::2]])) / np.linalg.norm(u, np.inf)
+            conv.append(np.linalg.norm(rel_error))
             h.append(1/(2**i))
-           
+
         order = np.polyfit(np.log(h), np.log(conv), 1)[0]
         self.assertGreater(order, 0.8)
         print("The order of convergence is: ", order)
         
         plt.figure()
-        plt.loglog(h,conv)
+        plt.loglog(h,conv,'o-')
         plt.xlabel("log(h)")
         plt.ylabel("log(error)")
-        plt.savefig("conv.pdf")
+        #plt.savefig("conv.pdf")
         plt.show()
     
     def test_runtime(self):
@@ -88,11 +87,13 @@ class TestHomogeneousDirichlet(unittest.TestCase):
             timeList.append(end-start)
             h.append(1/(2**i))
         plt.figure()
-        plt.plot(h, timeList)
-        plt.xlabel("h")
-        plt.ylabel("time(seconds)")
-        plt.savefig("time.pdf")
+        plt.loglog(h, timeList,'o-')
+        plt.xlabel("log(h)")
+        plt.ylabel("log(seconds)")
+        #plt.savefig("time.pdf")
         plt.show()
+        order = np.polyfit(np.log(h), np.log(timeList), 1)[0]
+        print("The scaling of time compared to h is: ", order)
 
 #Exact strain-vector
 def e(x,y):
