@@ -25,7 +25,7 @@ class TestHomogeneousDirichlet(unittest.TestCase):
     
     @unittest.skip
     def test_compare_analytic(self):
-        N = 50
+        N = 100
         
         #Find numerical solution
         u_num, p, tri=homogeneousDirichlet(N,4,f,nu,E)
@@ -44,7 +44,6 @@ class TestHomogeneousDirichlet(unittest.TestCase):
         plot(p[:, 0], p[:, 1], u_ex, "Exact Solution", set_axis = True)
         plot(p[:, 0], p[:, 1], u1_num - u_ex, "Error, N = "+str(N))
     
-    @unittest.skip
     def test_convergence(self):
         highest = 7 #Comparing num_sol to solution with h = 1/2^highest
         n=2**highest
@@ -77,7 +76,6 @@ class TestHomogeneousDirichlet(unittest.TestCase):
         plt.savefig("conv.pdf")
         plt.show()
     
-    @unittest.skip
     def test_runtime(self):
         highest = 7
         timeList=[]
