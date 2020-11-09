@@ -39,9 +39,11 @@ class TestHomogeneousDirichlet(unittest.TestCase):
         print("Max error of solution is:", max_error, " for N=",N)
         self.assertAlmostEqual(max_error, 0, delta=1/N)
         
-        plot(p[:, 0], p[:, 1], u1_num, "Numerical Solution, N = "+str(N), set_axis = True)
+        plot(p[:, 0], p[:, 1], u1_num, "Numerical Solution ux, N = "+str(N), set_axis = True)
+        plot(p[:, 0], p[:, 1], u2_num, "Numerical Solution uy, N = " + str(N), set_axis=True)
         plot(p[:, 0], p[:, 1], u_ex, "Exact Solution", set_axis = True)
-        plot(p[:, 0], p[:, 1], u1_num - u_ex, "Error, N = "+str(N))
+        plot(p[:, 0], p[:, 1], u1_num - u_ex, "Error ux, N = "+str(N))
+        plot(p[:, 0], p[:, 1], u2_num - u_ex, "Error uy, N = " + str(N))
     
     def test_convergence(self):
         highest = 7 #Comparing num_sol to solution with h = 1/2^highest
@@ -62,21 +64,23 @@ class TestHomogeneousDirichlet(unittest.TestCase):
             u, p,tri = homogeneousDirichlet(N, 4, f, nu, E)
             rel_error=abs(np.array([ux_k, uy_k]) - np.array([u[::2], u[1::2]])) / np.linalg.norm(u, np.inf)
             conv.append(np.linalg.norm(rel_error))
-            h.append(1/(2**i))
+            h.append(2/(2**i))
 
         order = np.polyfit(np.log(h), np.log(conv), 1)[0]
         self.assertGreater(order, 0.8)
         print("The order of convergence is: ", order)
-        
+
+        h=np.array(h)
         plt.figure()
         plt.loglog(h,conv,'o-')
+        plt.loglog(h, 0.3 * h , 'r-')
         plt.xlabel("log(h)")
         plt.ylabel("log(error)")
-        #plt.savefig("conv.pdf")
+        plt.savefig("conv.pdf")
         plt.show()
     
     def test_runtime(self):
-        highest = 7
+        highest = 8
         timeList=[]
         h=[]
         for i in range(1,highest):
@@ -85,12 +89,14 @@ class TestHomogeneousDirichlet(unittest.TestCase):
             u, p, tri = homogeneousDirichlet(N, 4, f, nu, E)
             end = time.time()
             timeList.append(end-start)
-            h.append(1/(2**i))
+            h.append(2/(2**i))
+        h=np.array(h)
         plt.figure()
         plt.loglog(h, timeList,'o-')
         plt.xlabel("log(h)")
         plt.ylabel("log(seconds)")
-        #plt.savefig("time.pdf")
+        plt.loglog(h, 0.3 * h**(-2), 'r-')
+        plt.savefig("time.pdf")
         plt.show()
         order = np.polyfit(np.log(h), np.log(timeList), 1)[0]
         print("The scaling of time compared to h is: ", order)
