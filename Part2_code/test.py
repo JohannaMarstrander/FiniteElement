@@ -28,6 +28,7 @@ class TestHomogeneousDirichlet(unittest.TestCase):
         
         #Find numerical solution
         u_num, p, tri=homogeneousDirichlet(N,4,f,nu,E)
+        #u_num=u_num[0]
         u1_num=u_num[::2]
         u2_num=u_num[1::2]
         
@@ -40,10 +41,10 @@ class TestHomogeneousDirichlet(unittest.TestCase):
         self.assertAlmostEqual(max_error, 0, delta=1/N)
         
         plot(p[:, 0], p[:, 1], u1_num, "Numerical Solution ux, N = "+str(N), set_axis = True)
-        plot(p[:, 0], p[:, 1], u2_num, "Numerical Solution uy, N = " + str(N), set_axis=True)
+        #plot(p[:, 0], p[:, 1], u2_num, "Numerical Solution uy, N = " + str(N), set_axis=True)
         plot(p[:, 0], p[:, 1], u_ex, "Exact Solution", set_axis = True)
         plot(p[:, 0], p[:, 1], u1_num - u_ex, "Error ux, N = "+str(N))
-        plot(p[:, 0], p[:, 1], u2_num - u_ex, "Error uy, N = " + str(N))
+        #plot(p[:, 0], p[:, 1], u2_num - u_ex, "Error uy, N = " + str(N))
     
     def test_convergence(self):
         highest = 7 #Comparing num_sol to solution with h = 1/2^highest
@@ -62,8 +63,8 @@ class TestHomogeneousDirichlet(unittest.TestCase):
             k=np.sort(k)
             ux_k,uy_k = ux[k],uy[k]
             u, p,tri = homogeneousDirichlet(N, 4, f, nu, E)
-            rel_error=abs(np.array([ux_k, uy_k]) - np.array([u[::2], u[1::2]])) / np.linalg.norm(u, np.inf)
-            conv.append(np.linalg.norm(rel_error))
+            rel_error=abs(ux_k - u[::2]) / np.linalg.norm(u, np.inf)
+            conv.append(np.linalg.norm(rel_error,np.inf))
             h.append(2/(2**i))
 
         order = np.polyfit(np.log(h), np.log(conv), 1)[0]
@@ -73,7 +74,7 @@ class TestHomogeneousDirichlet(unittest.TestCase):
         h=np.array(h)
         plt.figure()
         plt.loglog(h,conv,'o-')
-        plt.loglog(h, 0.3 * h , 'r-')
+        plt.loglog(h, 0.3 * h**2 , 'r-')
         plt.xlabel("log(h)")
         plt.ylabel("log(error)")
         plt.savefig("conv.pdf")
@@ -137,4 +138,4 @@ class TestStressRecovery(unittest.TestCase):
                 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(module="test")
