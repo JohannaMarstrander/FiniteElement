@@ -12,8 +12,4 @@ In part 2, we solve the linear elasticity equation in 2D, find the numerical con
 time usage and use stress-recovery on the solution for the displacement to calculate the stresses.
 
 All source files and tests for solving the problem are placed in the "/Part2_code" directory. 
-Running "test.py" executes all tasks required by the project description. Alternatively, run
-
-python3 -m unittest test.TestClassName.function_name 
-
-from the "/Part2_code" directory to run each test separately. 
+Running "test.py" executes all tasks required by the project description. 
